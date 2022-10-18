@@ -1,32 +1,25 @@
-import 'package:calendar/calendar/calendar.dart';
+import 'package:calendar/calendar/calendar_controller.dart';
+import 'package:calendar/calendar/calendar_date_types.dart';
 import 'package:calendar/calendar/styles/calendar_colors.dart';
 import 'package:calendar/calendar/styles/calendar_ui_util.dart';
-import 'package:calendar/calendar/widgets/interval_mode/default_calendar_item.dart';
-import 'package:calendar/calendar/widgets/interval_mode/selected_calendar_item.dart';
-import 'package:calendar/calendar/widgets/interval_mode/selected_interval_calendar_item.dart';
-import 'package:calendar/calendar/widgets/single_mode/calendar_item.dart';
+import 'package:calendar/calendar/widgets/interval_mode_calendar_item.dart';
+import 'package:calendar/calendar/widgets/single_mode_calendar_item.dart';
 import 'package:flutter/material.dart';
 
 class Month extends StatelessWidget {
   final DateTime date;
-  final Function(DateTime) onChanged;
-  final DateTime? selectedDayStart;
-  final DateTime? selectedDayEnd;
-  final DateTime? selectedDay;
+  final CalendarController selectedDateController;
   final bool isInterval;
-  final List<DateTime>? availableDaysList;
-  final List<DateTime>? noAvailableDaysList;
+  final List<DateTime>? availableDatesList;
+  final List<DateTime>? noAvailableDatesList;
 
   const Month({
     Key? key,
     required this.date,
-    required this.onChanged,
-    this.selectedDayStart,
-    this.selectedDayEnd,
+    required this.selectedDateController,
     required this.isInterval,
-    this.availableDaysList,
-    this.noAvailableDaysList,
-    this.selectedDay,
+    this.availableDatesList,
+    this.noAvailableDatesList,
   }) : super(key: key);
 
   @override
@@ -47,13 +40,10 @@ class Month extends StatelessWidget {
           const SizedBox(height: 8),
           _MonthDays(
             date: date,
-            onChanged: onChanged,
-            selectedDateStart: selectedDayStart,
-            selectedDateEnd: selectedDayEnd,
-            selectedDay: selectedDay,
+            selectedDateController: selectedDateController,
             isInterval: isInterval,
-            availableDaysList: availableDaysList,
-            noAvailableDaysList: noAvailableDaysList,
+            availableDatesList: availableDatesList,
+            noAvailableDatesList: noAvailableDatesList,
           ),
         ],
       ),
@@ -63,24 +53,18 @@ class Month extends StatelessWidget {
 
 class _MonthDays extends StatefulWidget {
   final DateTime date;
-  final DateTime? selectedDateStart;
-  final DateTime? selectedDateEnd;
-  final DateTime? selectedDay;
-  final Function(DateTime) onChanged;
+  final CalendarController selectedDateController;
   final bool isInterval;
-  final List<DateTime>? availableDaysList;
-  final List<DateTime>? noAvailableDaysList;
+  final List<DateTime>? availableDatesList;
+  final List<DateTime>? noAvailableDatesList;
 
   const _MonthDays({
     Key? key,
     required this.date,
-    required this.onChanged,
-    this.selectedDateStart,
-    this.selectedDateEnd,
     required this.isInterval,
-    this.availableDaysList,
-    this.noAvailableDaysList,
-    this.selectedDay,
+    this.availableDatesList,
+    this.noAvailableDatesList,
+    required this.selectedDateController,
   }) : super(key: key);
 
   @override
@@ -102,106 +86,55 @@ class _MonthDaysState extends State<_MonthDays> {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        childAspectRatio: 1.3125,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        crossAxisCount: 7,
+    return SizedBox(
+      height: _monthDays >= 30 && _startWeekDay >= 5 ? 240 : 200,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        //shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          childAspectRatio: 1.3125,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+          crossAxisCount: 7,
+        ),
+        itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
+        itemBuilder: (context, index) {
+          if (_startWeekDay == index) {
+            _stopPainting = true;
+          }
+          if (_stopPainting) {
+            _day++;
+            if (_day <= _monthDays) {
+              if (widget.isInterval) {
+                return IntervalModeCalendarItem(
+                  date: DateTime(widget.date.year, widget.date.month, _day),
+                  selectedDateController: widget.selectedDateController,
+                );
+              } else {
+                return SingleModeCalendarItem(
+                  date: DateTime(widget.date.year, widget.date.month, _day),
+                  dayType: _dayTypeHandler(),
+                  selectedDateController: widget.selectedDateController,
+                );
+              }
+            }
+          }
+          return const SizedBox();
+        },
       ),
-      itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
-      itemBuilder: (context, index) {
-        if (widget.isInterval) {
-          return _calendarIntervalItem(index);
-        } else {
-          return _calendarItem(index);
-        }
-      },
     );
   }
 
-  Widget _calendarItem(int index) {
-    if (_startWeekDay == index) {
-      _stopPainting = true;
-    }
-    if (_stopPainting) {
-      _day++;
-      if (_day <= _monthDays) {
-        return CalendarItem(
-          date: DateTime(widget.date.year, widget.date.month, _day),
-          dayType: _dayTypeHandler(),
-          selectedDay: widget.selectedDay,
-          onTap: (value) {
-            widget.onChanged(
-              DateTime(widget.date.year, widget.date.month, value),
-            );
-          },
-        );
-      }
-    }
-    return const SizedBox();
-  }
-
-  DayType _dayTypeHandler() {
+  SingleDateType _dayTypeHandler() {
     DateTime date = DateTime(widget.date.year, widget.date.month, _day);
-    if (widget.availableDaysList != null &&
-        widget.availableDaysList!.contains(date)) {
-      return DayType.availableDay;
-    } else if (widget.noAvailableDaysList != null &&
-        widget.noAvailableDaysList!.contains(date)) {
-      return DayType.noAvailableDay;
+    if (widget.availableDatesList != null &&
+        widget.availableDatesList!.contains(date)) {
+      return SingleDateType.availableDate;
+    } else if (widget.noAvailableDatesList != null &&
+        widget.noAvailableDatesList!.contains(date)) {
+      return SingleDateType.noAvailableDate;
     } else {
-      return DayType.defaultDay;
+      return SingleDateType.defaultDate;
     }
-  }
-
-  Widget _calendarIntervalItem(int index) {
-    if (_startWeekDay == index) {
-      _stopPainting = true;
-    }
-    if (_stopPainting) {
-      _day++;
-      if (_day <= _monthDays) {
-        ///Проверка выбранной даты, если она соответсвует первой и последней, то отображем ее в черном квадрате
-        DateTime date = DateTime(widget.date.year, widget.date.month, _day);
-        if ((widget.selectedDateStart != null &&
-                date == widget.selectedDateStart!) ||
-            (widget.selectedDateEnd != null &&
-                date == widget.selectedDateEnd!)) {
-          return SelectedCalendarItem(
-            date: date,
-            onTap: (value) {
-              widget.onChanged(
-                DateTime(widget.date.year, widget.date.month, value),
-              );
-            },
-          );
-        }
-        if ((widget.selectedDateStart != null &&
-                date.isAfter(widget.selectedDateStart!)) &&
-            (widget.selectedDateEnd != null &&
-                date.isBefore(widget.selectedDateEnd!))) {
-          return SelectedIntervalCalendarItem(
-            date: date,
-            onTap: (value) {
-              widget.onChanged(
-                DateTime(widget.date.year, widget.date.month, value),
-              );
-            },
-          );
-        }
-        return DefaultCalendarItem(
-          date: date,
-          onTap: (value) {
-            widget.onChanged(
-              DateTime(widget.date.year, widget.date.month, value),
-            );
-          },
-        );
-      }
-    }
-    return const SizedBox();
   }
 }
