@@ -16,13 +16,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool workingMode = true;
   final _selectedDateController = CalendarController();
-  @override
-  void initState() {
-    _selectedDateController.addListener(() {
-      //print('${_selectedDateController.singleDate}\n\n');
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

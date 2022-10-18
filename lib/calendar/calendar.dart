@@ -4,7 +4,7 @@ import 'package:calendar/calendar/widgets/month.dart';
 import 'package:calendar/calendar/widgets/week_days.dart';
 import 'package:flutter/material.dart';
 
-class Calendar extends StatefulWidget {
+class Calendar extends StatelessWidget {
   final bool isInterval;
   final List<DateTime>? availableDatesList;
   final List<DateTime>? noAvailableDatesList;
@@ -19,25 +19,9 @@ class Calendar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<Calendar> createState() => _CalendarState();
-}
-
-class _CalendarState extends State<Calendar> {
-  final _dateNow = DateTime.now();
-
-  @override
-  void initState() {
-    // _selectedDateController.addListener(() {
-    //   print(
-    //       'day: ${_selectedDateController.singleDate}\nstart: ${_selectedDateController.startDate}\nend: ${_selectedDateController.endDate}\n\n');
-    // });
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
-      key: ValueKey(widget.isInterval),
+      key: UniqueKey(),
       color: CalendarColors.black20,
       child: Column(
         children: [
@@ -49,11 +33,11 @@ class _CalendarState extends State<Calendar> {
                 children: List.generate(
                   6,
                   (index) => Month(
-                    selectedDateController: widget.selectedDateController,
-                    isInterval: widget.isInterval,
-                    availableDatesList: widget.availableDatesList,
-                    noAvailableDatesList: widget.noAvailableDatesList,
-                    date: DateTime.utc(_dateNow.year, _dateNow.month + index),
+                    selectedDateController: selectedDateController,
+                    isInterval: isInterval,
+                    availableDatesList: availableDatesList,
+                    noAvailableDatesList: noAvailableDatesList,
+                    date: DateTime.utc(DateTime.now().year, DateTime.now().month + index),
                   ),
                 ),
               ),
@@ -63,10 +47,4 @@ class _CalendarState extends State<Calendar> {
       ),
     );
   }
-}
-
-enum DayType {
-  availableDay,
-  noAvailableDay,
-  defaultDay,
 }

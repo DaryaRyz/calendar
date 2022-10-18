@@ -1,11 +1,9 @@
-import 'package:calendar/calendar/calendar.dart';
 import 'package:calendar/calendar/calendar_controller.dart';
+import 'package:calendar/calendar/calendar_date_types.dart';
 import 'package:calendar/calendar/styles/calendar_colors.dart';
 import 'package:calendar/calendar/styles/calendar_ui_util.dart';
-import 'package:calendar/calendar/widgets/interval_mode/default_calendar_item.dart';
-import 'package:calendar/calendar/widgets/interval_mode/selected_calendar_item.dart';
-import 'package:calendar/calendar/widgets/interval_mode/selected_interval_calendar_item.dart';
-import 'package:calendar/calendar/widgets/single_mode/calendar_item.dart';
+import 'package:calendar/calendar/widgets/interval_mode_calendar_item.dart';
+import 'package:calendar/calendar/widgets/single_mode_calendar_item.dart';
 import 'package:flutter/material.dart';
 
 class Month extends StatelessWidget {
@@ -101,83 +99,42 @@ class _MonthDaysState extends State<_MonthDays> {
         ),
         itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
         itemBuilder: (context, index) {
-          if (widget.isInterval) {
-            return SizedBox();
-           // return _calendarIntervalItem(index);
-          } else {
-            return _calendarItem(index);
+          if (_startWeekDay == index) {
+            _stopPainting = true;
           }
+          if (_stopPainting) {
+            _day++;
+            if (_day <= _monthDays) {
+              if (widget.isInterval) {
+                return IntervalModeCalendarItem(
+                  date: DateTime(widget.date.year, widget.date.month, _day),
+                  selectedDateController: widget.selectedDateController,
+                );
+              } else {
+                return SingleModeCalendarItem(
+                  date: DateTime(widget.date.year, widget.date.month, _day),
+                  dayType: _dayTypeHandler(),
+                  selectedDateController: widget.selectedDateController,
+                );
+              }
+            }
+          }
+          return const SizedBox();
         },
       ),
     );
   }
 
-  Widget _calendarItem(int index) {
-    if (_startWeekDay == index) {
-      _stopPainting = true;
-    }
-    if (_stopPainting) {
-      _day++;
-      if (_day <= _monthDays) {
-        return CalendarItem(
-          date: DateTime(widget.date.year, widget.date.month, _day),
-          dayType: _dayTypeHandler(),
-          selectedDateController: widget.selectedDateController,
-        );
-      }
-    }
-    return const SizedBox();
-  }
-
-  DayType _dayTypeHandler() {
+  SingleDateType _dayTypeHandler() {
     DateTime date = DateTime(widget.date.year, widget.date.month, _day);
     if (widget.availableDatesList != null &&
         widget.availableDatesList!.contains(date)) {
-      return DayType.availableDay;
+      return SingleDateType.availableDate;
     } else if (widget.noAvailableDatesList != null &&
         widget.noAvailableDatesList!.contains(date)) {
-      return DayType.noAvailableDay;
+      return SingleDateType.noAvailableDate;
     } else {
-      return DayType.defaultDay;
+      return SingleDateType.defaultDate;
     }
   }
-
-  // Widget _calendarIntervalItem(int index) {
-  //   if (_startWeekDay == index) {
-  //     _stopPainting = true;
-  //   }
-  //   if (_stopPainting) {
-  //     _day++;
-  //     if (_day <= _monthDays) {
-  //       ///Проверка выбранной даты, если она соответсвует первой и последней, то отображем ее в черном квадрате
-  //       DateTime date = DateTime(widget.date.year, widget.date.month, _day);
-  //       if ((widget.selectedDateStart.date != null &&
-  //               date == widget.selectedDateStart.date) ||
-  //           (widget.selectedDateEnd.date != null &&
-  //               date == widget.selectedDateEnd.date)) {
-  //         return SelectedCalendarItem(
-  //           date: date,
-  //           selectedStartDate: widget.selectedDateStart,
-  //           selectedEndDate: widget.selectedDateEnd,
-  //         );
-  //       }
-  //       if ((widget.selectedDateStart.date != null &&
-  //               date.isAfter(widget.selectedDateStart.date!)) &&
-  //           (widget.selectedDateEnd.date != null &&
-  //               date.isBefore(widget.selectedDateEnd.date!))) {
-  //         return SelectedIntervalCalendarItem(
-  //           date: date,
-  //           selectedStartDate: widget.selectedDateStart,
-  //           selectedEndDate: widget.selectedDateEnd,
-  //         );
-  //       }
-  //       return DefaultCalendarItem(
-  //         date: date,
-  //         selectedStartDate: widget.selectedDateStart,
-  //         selectedEndDate: widget.selectedDateEnd,
-  //       );
-  //     }
-  //   }
-  //   return const SizedBox();
-  // }
 }

@@ -5,7 +5,7 @@ class CalendarController extends ChangeNotifier{
   DateTime? _startDate;
   DateTime? _endDate;
 
-  void setStartDate(DateTime date){
+  void setStartDate(DateTime? date){
     _startDate = date;
     notifyListeners();
   }
@@ -14,7 +14,7 @@ class CalendarController extends ChangeNotifier{
     return _startDate;
   }
 
-  void setEndDate(DateTime date){
+  void setEndDate(DateTime? date){
     _endDate = date;
     notifyListeners();
   }
@@ -23,7 +23,7 @@ class CalendarController extends ChangeNotifier{
     return _endDate;
   }
 
-  void setSingleDate(DateTime date){
+  void setSingleDate(DateTime? date){
     _singleDate = date;
     notifyListeners();
   }

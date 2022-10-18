@@ -1,14 +1,14 @@
-import 'package:calendar/calendar/calendar.dart';
 import 'package:calendar/calendar/calendar_controller.dart';
+import 'package:calendar/calendar/calendar_date_types.dart';
 import 'package:calendar/calendar/styles/calendar_colors.dart';
 import 'package:flutter/material.dart';
 
-class CalendarItem extends StatefulWidget {
+class SingleModeCalendarItem extends StatefulWidget {
   final DateTime date;
-  final DayType dayType;
+  final SingleDateType dayType;
   final CalendarController selectedDateController;
 
-  const CalendarItem({
+  const SingleModeCalendarItem({
     Key? key,
     required this.date,
     required this.dayType,
@@ -16,10 +16,10 @@ class CalendarItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CalendarItem> createState() => _CalendarItemState();
+  State<SingleModeCalendarItem> createState() => _SingleModeCalendarItemState();
 }
 
-class _CalendarItemState extends State<CalendarItem> {
+class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
   final DateTime _dateNow = DateTime.now();
 
   ///прошедшие (недоступные) даты _isActualDate = false
@@ -69,7 +69,7 @@ class _CalendarItemState extends State<CalendarItem> {
         ),
       ),
       child: TextButton(
-        onPressed: _isActualDate && widget.dayType == DayType.availableDay
+        onPressed: _isActualDate && widget.dayType == SingleDateType.availableDate
             ? () {
                 setState(() {
                   widget.selectedDateController.setSingleDate(widget.date);
@@ -105,19 +105,19 @@ class _CalendarItemState extends State<CalendarItem> {
       );
     } else {
       switch (widget.dayType) {
-        case DayType.availableDay:
+        case SingleDateType.availableDate:
           return const TextStyle(
             color: CalendarColors.black500,
             fontSize: 14,
             fontWeight: FontWeight.w500,
           );
-        case DayType.noAvailableDay:
+        case SingleDateType.noAvailableDate:
           return const TextStyle(
             color: CalendarColors.black300,
             fontSize: 14,
             fontWeight: FontWeight.w400,
           );
-        case DayType.defaultDay:
+        case SingleDateType.defaultDate:
           return const TextStyle(
             color: CalendarColors.black500,
             fontSize: 14,
@@ -132,11 +132,11 @@ class _CalendarItemState extends State<CalendarItem> {
       return CalendarColors.black500;
     }
     switch (widget.dayType) {
-      case DayType.availableDay:
+      case SingleDateType.availableDate:
         return CalendarColors.white;
-      case DayType.noAvailableDay:
+      case SingleDateType.noAvailableDate:
         return CalendarColors.black150;
-      case DayType.defaultDay:
+      case SingleDateType.defaultDate:
         return Colors.transparent;
     }
   }
