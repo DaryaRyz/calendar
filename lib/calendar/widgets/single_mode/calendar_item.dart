@@ -1,19 +1,18 @@
 import 'package:calendar/calendar/calendar.dart';
+import 'package:calendar/calendar/calendar_controller.dart';
 import 'package:calendar/calendar/styles/calendar_colors.dart';
 import 'package:flutter/material.dart';
 
 class CalendarItem extends StatefulWidget {
   final DateTime date;
-  final Function(int) onTap;
   final DayType dayType;
-  final DateTime? selectedDay;
+  final CalendarController selectedDateController;
 
   const CalendarItem({
     Key? key,
     required this.date,
-    required this.onTap,
     required this.dayType,
-    this.selectedDay,
+    required this.selectedDateController,
   }) : super(key: key);
 
   @override
@@ -22,14 +21,35 @@ class CalendarItem extends StatefulWidget {
 
 class _CalendarItemState extends State<CalendarItem> {
   final DateTime _dateNow = DateTime.now();
-  late bool _isActiveItem;
+
+  ///прошедшие (недоступные) даты _isActualDate = false
+  late bool _isActualDate;
+  bool _isSelected = false;
 
   @override
   void initState() {
+    ///для оптимизации каждая ячейка слушает контроллер и
+    ///перерисовывается только в том случае, если она была до этого
+    /// выбрана (_isSelected = true)
+    widget.selectedDateController.addListener(() {
+      if (_isSelected) {
+        if (mounted) {
+          setState(() {
+            _isSelected = false;
+          });
+        }
+      }
+    });
+    if (widget.selectedDateController.singleDate == widget.date) {
+      _isSelected = true;
+    }
+
+    ///если дата, которая отрисовывается в текущий момент, меньше сегодняшней и
+    ///их месяцы совпадают, то она становится прошедшей(_isActualDate = false)
     if (_dateNow.day > widget.date.day && _dateNow.month == widget.date.month) {
-      _isActiveItem = false;
+      _isActualDate = false;
     } else {
-      _isActiveItem = true;
+      _isActualDate = true;
     }
     super.initState();
   }
@@ -49,12 +69,13 @@ class _CalendarItemState extends State<CalendarItem> {
         ),
       ),
       child: TextButton(
-        onPressed: _isActiveItem
-            ? widget.dayType == DayType.availableDay
-                ? () {
-                    widget.onTap(widget.date.day);
-                  }
-                : null
+        onPressed: _isActualDate && widget.dayType == DayType.availableDay
+            ? () {
+                setState(() {
+                  widget.selectedDateController.setSingleDate(widget.date);
+                  _isSelected = true;
+                });
+              }
             : null,
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
@@ -69,14 +90,14 @@ class _CalendarItemState extends State<CalendarItem> {
   }
 
   TextStyle _textStyleHandler() {
-    if(widget.selectedDay == widget.date){
+    if (_isSelected) {
       return const TextStyle(
         color: CalendarColors.white,
         fontSize: 14,
         fontWeight: FontWeight.w600,
       );
     }
-    if (!_isActiveItem) {
+    if (!_isActualDate) {
       return const TextStyle(
         color: CalendarColors.black300,
         fontSize: 14,
@@ -107,7 +128,7 @@ class _CalendarItemState extends State<CalendarItem> {
   }
 
   Color _colorHandler() {
-    if (widget.selectedDay == widget.date) {
+    if (_isSelected) {
       return CalendarColors.black500;
     }
     switch (widget.dayType) {

@@ -1,4 +1,5 @@
 import 'package:calendar/calendar/calendar.dart';
+import 'package:calendar/calendar/calendar_controller.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,6 +15,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool workingMode = true;
+  final _selectedDateController = CalendarController();
+  @override
+  void initState() {
+    _selectedDateController.addListener(() {
+      //print('${_selectedDateController.singleDate}\n\n');
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +51,13 @@ class _MyAppState extends State<MyApp> {
           ),
           body: Calendar(
             isInterval: workingMode,
-            availableDaysList: [
+            selectedDateController: _selectedDateController,
+            availableDatesList: [
               DateTime(2022, 10, 18),
               DateTime(2022, 10, 22),
               DateTime(2022, 11, 22),
             ],
-            noAvailableDaysList: [
+            noAvailableDatesList: [
               DateTime(2022, 10, 17),
               DateTime(2022, 10, 30),
               DateTime(2022, 11, 30)
@@ -58,3 +68,4 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
+
