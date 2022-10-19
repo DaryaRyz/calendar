@@ -1,5 +1,4 @@
 import 'package:calendar/calendar/calendar_controller.dart';
-import 'package:calendar/calendar/calendar_date_types.dart';
 import 'package:calendar/calendar/styles/calendar_colors.dart';
 import 'package:calendar/calendar/styles/calendar_ui_util.dart';
 import 'package:calendar/calendar/widgets/interval_mode_calendar_item.dart';
@@ -86,55 +85,40 @@ class _MonthDaysState extends State<_MonthDays> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: _monthDays >= 30 && _startWeekDay >= 5 ? 240 : 200,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        //shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          childAspectRatio: 1.3125,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-          crossAxisCount: 7,
-        ),
-        itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
-        itemBuilder: (context, index) {
-          if (_startWeekDay == index) {
-            _stopPainting = true;
-          }
-          if (_stopPainting) {
-            _day++;
-            if (_day <= _monthDays) {
-              if (widget.isInterval) {
-                return IntervalModeCalendarItem(
-                  date: DateTime(widget.date.year, widget.date.month, _day),
-                  selectedDateController: widget.selectedDateController,
-                );
-              } else {
-                return SingleModeCalendarItem(
-                  date: DateTime(widget.date.year, widget.date.month, _day),
-                  dayType: _dayTypeHandler(),
-                  selectedDateController: widget.selectedDateController,
-                );
-              }
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        childAspectRatio: 1.3125,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        crossAxisCount: 7,
+      ),
+      itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
+      itemBuilder: (context, index) {
+        if (_startWeekDay == index) {
+          _stopPainting = true;
+        }
+        if (_stopPainting) {
+          _day++;
+          if (_day <= _monthDays) {
+            if (widget.isInterval) {
+              return IntervalModeCalendarItem(
+                date: DateTime(widget.date.year, widget.date.month, _day),
+                selectedDateController: widget.selectedDateController,
+              );
+            } else {
+              return SingleModeCalendarItem(
+                date: DateTime(widget.date.year, widget.date.month, _day),
+                selectedDateController: widget.selectedDateController,
+                availableDatesList: widget.availableDatesList,
+                noAvailableDatesList: widget.noAvailableDatesList,
+              );
             }
           }
-          return const SizedBox();
-        },
-      ),
+        }
+        return const SizedBox();
+      },
     );
-  }
-
-  SingleDateType _dayTypeHandler() {
-    DateTime date = DateTime(widget.date.year, widget.date.month, _day);
-    if (widget.availableDatesList != null &&
-        widget.availableDatesList!.contains(date)) {
-      return SingleDateType.availableDate;
-    } else if (widget.noAvailableDatesList != null &&
-        widget.noAvailableDatesList!.contains(date)) {
-      return SingleDateType.noAvailableDate;
-    } else {
-      return SingleDateType.defaultDate;
-    }
   }
 }
