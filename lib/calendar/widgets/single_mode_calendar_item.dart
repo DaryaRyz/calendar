@@ -5,14 +5,16 @@ import 'package:flutter/material.dart';
 
 class SingleModeCalendarItem extends StatefulWidget {
   final DateTime date;
-  final SingleDateType dayType;
   final CalendarController selectedDateController;
+  final List<DateTime>? availableDatesList;
+  final List<DateTime>? noAvailableDatesList;
 
   const SingleModeCalendarItem({
     Key? key,
     required this.date,
-    required this.dayType,
     required this.selectedDateController,
+    this.availableDatesList,
+    this.noAvailableDatesList,
   }) : super(key: key);
 
   @override
@@ -24,24 +26,25 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
 
   ///прошедшие (недоступные) даты _isActualDate = false
   late bool _isActualDate;
-  bool _isSelected = false;
+  late SingleDateType _dateType;
 
   @override
   void initState() {
+    _dateType = _dateTypeHandler();
     ///для оптимизации каждая ячейка слушает контроллер и
-    ///перерисовывается только в том случае, если она была до этого
-    /// выбрана (_isSelected = true)
+    ///перезаписывается только в том случае, если она была до этого
+    /// выбрана (_dateType == SingleDateType.selectedDate)
     widget.selectedDateController.addListener(() {
-      if (_isSelected) {
+      if (_dateType == SingleDateType.selectedDate) {
         if (mounted) {
           setState(() {
-            _isSelected = false;
+            _dateType = _dateTypeHandler();
           });
         }
       }
     });
     if (widget.selectedDateController.singleDate == widget.date) {
-      _isSelected = true;
+      _dateType = SingleDateType.selectedDate;
     }
 
     ///если дата, которая отрисовывается в текущий момент, меньше сегодняшней и
@@ -69,11 +72,11 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         ),
       ),
       child: TextButton(
-        onPressed: _isActualDate && widget.dayType == SingleDateType.availableDate
+        onPressed: _isActualDate && _dateType == SingleDateType.availableDate
             ? () {
                 setState(() {
                   widget.selectedDateController.setSingleDate(widget.date);
-                  _isSelected = true;
+                  _dateType = SingleDateType.selectedDate;
                 });
               }
             : null,
@@ -90,13 +93,6 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
   }
 
   TextStyle _textStyleHandler() {
-    if (_isSelected) {
-      return const TextStyle(
-        color: CalendarColors.white,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-      );
-    }
     if (!_isActualDate) {
       return const TextStyle(
         color: CalendarColors.black300,
@@ -104,7 +100,7 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         fontWeight: FontWeight.w400,
       );
     } else {
-      switch (widget.dayType) {
+      switch (_dateType) {
         case SingleDateType.availableDate:
           return const TextStyle(
             color: CalendarColors.black500,
@@ -123,21 +119,38 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
             fontSize: 14,
             fontWeight: FontWeight.w400,
           );
+        case SingleDateType.selectedDate:
+          return const TextStyle(
+            color: CalendarColors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          );
       }
     }
   }
 
   Color _colorHandler() {
-    if (_isSelected) {
-      return CalendarColors.black500;
-    }
-    switch (widget.dayType) {
+    switch (_dateType) {
       case SingleDateType.availableDate:
         return CalendarColors.white;
       case SingleDateType.noAvailableDate:
         return CalendarColors.black150;
       case SingleDateType.defaultDate:
         return Colors.transparent;
+      case SingleDateType.selectedDate:
+        return CalendarColors.black500;
+    }
+  }
+
+  SingleDateType _dateTypeHandler() {
+    if (widget.availableDatesList != null &&
+        widget.availableDatesList!.contains(widget.date)) {
+      return SingleDateType.availableDate;
+    } else if (widget.noAvailableDatesList != null &&
+        widget.noAvailableDatesList!.contains(widget.date)) {
+      return SingleDateType.noAvailableDate;
+    } else {
+      return SingleDateType.defaultDate;
     }
   }
 }
