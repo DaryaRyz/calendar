@@ -55,7 +55,6 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,30 +89,29 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
       );
     } else {
       return SingleStyleHandler(_dateType).textStyle!;
-      }
     }
+  }
 
   SingleDateType _dateTypeHandler() {
     if (widget.availableDatesList != null &&
         widget.availableDatesList!.contains(widget.date)) {
       return SingleDateType.availableDate;
-    } else if (widget.noAvailableDatesList != null &&
+    }
+    if (widget.noAvailableDatesList != null &&
         widget.noAvailableDatesList!.contains(widget.date)) {
       return SingleDateType.noAvailableDate;
-    } else {
-      return SingleDateType.defaultDate;
     }
+    return SingleDateType.defaultDate;
   }
-
 
   _onTapHandler() {
     _isActualDate && _dateType == SingleDateType.availableDate
         ? () {
-      setState(() {
-        widget.selectedDateController.setSingleDate(widget.date);
-        _dateType = SingleDateType.selectedDate;
-      });
-    }
+            setState(() {
+              widget.selectedDateController.setSingleDate(widget.date);
+              _dateType = SingleDateType.selectedDate;
+            });
+          }
         : null;
   }
 
