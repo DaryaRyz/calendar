@@ -4,21 +4,45 @@ import 'package:calendar/calendar/widgets/month.dart';
 import 'package:calendar/calendar/widgets/week_days.dart';
 import 'package:flutter/material.dart';
 
-class Calendar extends StatelessWidget {
+class Calendar extends StatefulWidget {
   final bool isInterval;
   final List<DateTime>? availableDatesList;
   final List<DateTime>? noAvailableDatesList;
-  final CalendarController selectedDateController;
   final int monthQuantity;
+  final Function(
+    DateTime? singleDate,
+    DateTime? startDate,
+    DateTime? endDate,
+  ) onChange;
 
   const Calendar({
     Key? key,
     required this.isInterval,
     this.availableDatesList,
     this.noAvailableDatesList,
-    required this.selectedDateController,
     this.monthQuantity = 6,
+    required this.onChange,
   }) : super(key: key);
+
+  @override
+  State<Calendar> createState() => _CalendarState();
+}
+
+class _CalendarState extends State<Calendar> {
+ final _selectedDateController = CalendarController();
+
+  @override
+  void initState() {
+      _selectedDateController.addListener(() {
+        widget.onChange(
+          _selectedDateController.singleDate,
+          _selectedDateController.startDate,
+          _selectedDateController.endDate,
+        );
+      });
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,12 +57,12 @@ class Calendar extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: List.generate(
-                  monthQuantity,
+                  widget.monthQuantity,
                   (index) => Month(
-                    selectedDateController: selectedDateController,
-                    isInterval: isInterval,
-                    availableDatesList: availableDatesList,
-                    noAvailableDatesList: noAvailableDatesList,
+                    selectedDateController: _selectedDateController,
+                    isInterval: widget.isInterval,
+                    availableDatesList: widget.availableDatesList,
+                    noAvailableDatesList: widget.noAvailableDatesList,
                     date: DateTime.utc(
                         DateTime.now().year, DateTime.now().month + index),
                   ),
