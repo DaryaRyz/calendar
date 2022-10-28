@@ -60,17 +60,13 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: _marginHandler(),
+      margin: IntervalStyleHandler(_dateType).margin,
       decoration: BoxDecoration(
-        color: _colorHandler(),
-        borderRadius: _borderRadiusHandler(),
+        color: IntervalStyleHandler(_dateType).color,
+        borderRadius: IntervalStyleHandler(_dateType).borderRadius,
       ),
       child: TextButton(
-        onPressed: _isActualDate
-            ? () {
-                _intervalSelectionSaveHandler(widget.date);
-              }
-            : null,
+        onPressed: _onTapHandler(),
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           primary: Colors.black87,
@@ -83,39 +79,6 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
     );
   }
 
-  EdgeInsetsGeometry? _marginHandler() {
-    switch (_dateType) {
-      case IntervalDateType.selectedDate:
-        return null;
-      case IntervalDateType.intervalDate:
-        return const EdgeInsets.symmetric(vertical: 3);
-      case IntervalDateType.defaultDate:
-        return null;
-    }
-  }
-
-  Color _colorHandler() {
-    switch (_dateType) {
-      case IntervalDateType.selectedDate:
-        return CalendarColors.black500;
-      case IntervalDateType.intervalDate:
-        return CalendarColors.black150;
-      case IntervalDateType.defaultDate:
-        return Colors.transparent;
-    }
-  }
-
-  BorderRadiusGeometry? _borderRadiusHandler() {
-    switch (_dateType) {
-      case IntervalDateType.selectedDate:
-        return BorderRadius.circular(8);
-      case IntervalDateType.intervalDate:
-        return BorderRadius.circular(8);
-      case IntervalDateType.defaultDate:
-        return null;
-    }
-  }
-
   TextStyle _textStyleHandler() {
     if (!_isActualDate) {
       return const TextStyle(
@@ -124,27 +87,16 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
         fontWeight: FontWeight.w400,
       );
     } else {
-      switch (_dateType) {
-        case IntervalDateType.selectedDate:
-          return const TextStyle(
-            color: CalendarColors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          );
-        case IntervalDateType.intervalDate:
-          return const TextStyle(
-            color: CalendarColors.black500,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          );
-        case IntervalDateType.defaultDate:
-          return const TextStyle(
-            color: CalendarColors.black500,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          );
-      }
+      return IntervalStyleHandler(_dateType).textStyle!;
     }
+  }
+
+  _onTapHandler() {
+    _isActualDate
+        ? () {
+            _intervalSelectionSaveHandler(widget.date);
+          }
+        : null;
   }
 
   void _intervalSelectionSaveHandler(DateTime value) {
@@ -197,3 +149,5 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
     }
   }
 }
+
+

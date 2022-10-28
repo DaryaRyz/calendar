@@ -60,7 +60,7 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: _colorHandler(),
+        color: SingleStyleHandler(_dateType).color,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: _borderColorHandler(),
@@ -89,47 +89,9 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         fontWeight: FontWeight.w400,
       );
     } else {
-      switch (_dateType) {
-        case SingleDateType.availableDate:
-          return const TextStyle(
-            color: CalendarColors.black500,
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-          );
-        case SingleDateType.noAvailableDate:
-          return const TextStyle(
-            color: CalendarColors.black300,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          );
-        case SingleDateType.defaultDate:
-          return const TextStyle(
-            color: CalendarColors.black500,
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-          );
-        case SingleDateType.selectedDate:
-          return const TextStyle(
-            color: CalendarColors.white,
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          );
+      return SingleStyleHandler(_dateType).textStyle!;
       }
     }
-  }
-
-  Color _colorHandler() {
-    switch (_dateType) {
-      case SingleDateType.availableDate:
-        return CalendarColors.white;
-      case SingleDateType.noAvailableDate:
-        return CalendarColors.black150;
-      case SingleDateType.defaultDate:
-        return Colors.transparent;
-      case SingleDateType.selectedDate:
-        return CalendarColors.black500;
-    }
-  }
 
   SingleDateType _dateTypeHandler() {
     if (widget.availableDatesList != null &&
