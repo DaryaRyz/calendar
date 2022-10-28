@@ -55,6 +55,7 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -62,22 +63,12 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         color: _colorHandler(),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: _dateNow.day == widget.date.day &&
-                  _dateNow.month == widget.date.month
-              ? CalendarColors.black500
-              : Colors.transparent,
+          color: _borderColorHandler(),
           width: 2,
         ),
       ),
       child: TextButton(
-        onPressed: _isActualDate && _dateType == SingleDateType.availableDate
-            ? () {
-                setState(() {
-                  widget.selectedDateController.setSingleDate(widget.date);
-                  _dateType = SingleDateType.selectedDate;
-                });
-              }
-            : null,
+        onPressed: _onTapHandler(),
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           primary: Colors.black87,
@@ -150,5 +141,23 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
     } else {
       return SingleDateType.defaultDate;
     }
+  }
+
+
+  _onTapHandler() {
+    _isActualDate && _dateType == SingleDateType.availableDate
+        ? () {
+      setState(() {
+        widget.selectedDateController.setSingleDate(widget.date);
+        _dateType = SingleDateType.selectedDate;
+      });
+    }
+        : null;
+  }
+
+  _borderColorHandler() {
+    _dateNow.day == widget.date.day && _dateNow.month == widget.date.month
+        ? CalendarColors.black500
+        : Colors.transparent;
   }
 }
