@@ -1,20 +1,20 @@
 import 'package:flutter/cupertino.dart';
 
-class CalendarController extends ChangeNotifier{
+class CalendarController extends ChangeNotifier {
   DateTime? _singleDate;
   DateTime? _startDate;
   DateTime? _endDate;
 
-  void setStartDate(DateTime? date){
+  void setStartDate(DateTime? date) {
     _startDate = date;
     notifyListeners();
   }
 
-  DateTime? get startDate{
+  DateTime? get startDate {
     return _startDate;
   }
 
-  void setEndDate(DateTime? date){
+  void setEndDate(DateTime? date) {
     _endDate = date;
     notifyListeners();
   }
@@ -23,12 +23,12 @@ class CalendarController extends ChangeNotifier{
     return _endDate;
   }
 
-  void setSingleDate(DateTime? date){
+  void setSingleDate(DateTime? date) {
     _singleDate = date;
     notifyListeners();
   }
 
-  DateTime? get singleDate{
+  DateTime? get singleDate {
     return _singleDate;
   }
 }

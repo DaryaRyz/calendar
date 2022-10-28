@@ -31,6 +31,7 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
   @override
   void initState() {
     _dateType = _dateTypeHandler();
+
     ///для оптимизации каждая ячейка слушает контроллер и
     ///перезаписывается только в том случае, если она была до этого
     /// выбрана (_dateType == SingleDateType.selectedDate)
@@ -49,11 +50,8 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
 
     ///если дата, которая отрисовывается в текущий момент, меньше сегодняшней и
     ///их месяцы совпадают, то она становится прошедшей(_isActualDate = false)
-    if (_dateNow.day > widget.date.day && _dateNow.month == widget.date.month) {
-      _isActualDate = false;
-    } else {
-      _isActualDate = true;
-    }
+    _isActualDate =
+        _dateNow.day <= widget.date.day || _dateNow.month != widget.date.month;
     super.initState();
   }
 

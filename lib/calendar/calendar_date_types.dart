@@ -5,7 +5,7 @@ enum SingleDateType {
   selectedDate,
 }
 
-enum IntervalDateType{
+enum IntervalDateType {
   selectedDate,
   intervalDate,
   defaultDate,

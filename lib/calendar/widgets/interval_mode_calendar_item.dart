@@ -148,10 +148,8 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
   }
 
   void _intervalSelectionSaveHandler(DateTime value) {
-
     ///сохранение начальной и конечной даты в контроллер
     if (widget.selectedDateController.startDate != null) {
-
       ///Если интервал определен и после этого была выбрана дата,
       ///то сбрасываем данные и выбранную дату записываем
       /// в selectedDateController.startDate
@@ -161,10 +159,12 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
       } else {
         widget.selectedDateController.setEndDate(value);
 
-        if (widget.selectedDateController.startDate!.isAfter(widget.selectedDateController.endDate!)) {
+        if (widget.selectedDateController.startDate!
+            .isAfter(widget.selectedDateController.endDate!)) {
           ///Меняем местами дату начала и конца интервала
           DateTime buffer = widget.selectedDateController.startDate!;
-          widget.selectedDateController.setStartDate(widget.selectedDateController.endDate);
+          widget.selectedDateController
+              .setStartDate(widget.selectedDateController.endDate);
           widget.selectedDateController.setEndDate(buffer);
         }
       }
@@ -174,18 +174,21 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
   }
 
   void _dateTypeHandler(DateTime date) {
-
     ///Проверка выбранной даты, если она соответсвует первой и последней,
     ///то отображем ее в черном квадрате
-    if ((widget.selectedDateController.startDate != null && date == widget.selectedDateController.startDate) ||
-        (widget.selectedDateController.endDate != null && date == widget.selectedDateController.endDate)) {
+    if ((widget.selectedDateController.startDate != null &&
+            date == widget.selectedDateController.startDate) ||
+        (widget.selectedDateController.endDate != null &&
+            date == widget.selectedDateController.endDate)) {
       if (mounted) {
         setState(() {
           _dateType = IntervalDateType.selectedDate;
         });
       }
-    } else if ((widget.selectedDateController.startDate != null && date.isAfter(widget.selectedDateController.startDate!)) &&
-        (widget.selectedDateController.endDate != null && date.isBefore(widget.selectedDateController.endDate!))) {
+    } else if ((widget.selectedDateController.startDate != null &&
+            date.isAfter(widget.selectedDateController.startDate!)) &&
+        (widget.selectedDateController.endDate != null &&
+            date.isBefore(widget.selectedDateController.endDate!))) {
       if (mounted) {
         setState(() {
           _dateType = IntervalDateType.intervalDate;
