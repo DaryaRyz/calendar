@@ -13,7 +13,7 @@ class WeekDays extends StatelessWidget {
         children: List.generate(
           CalendarStrings.weekDays.length,
           (index) => _WeekDay(
-            weekDay: CalendarStrings.weekDays[index],
+            name: CalendarStrings.weekDays[index],
           ),
         ),
       ),
@@ -22,11 +22,11 @@ class WeekDays extends StatelessWidget {
 }
 
 class _WeekDay extends StatelessWidget {
-  final String weekDay;
+  final String name;
 
   const _WeekDay({
     Key? key,
-    required this.weekDay,
+    required this.name,
   }) : super(key: key);
 
   @override
@@ -36,7 +36,7 @@ class _WeekDay extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Center(
           child: Text(
-            weekDay,
+            name,
             style: const TextStyle(
               color: CalendarColors.black300,
               fontSize: 12,
