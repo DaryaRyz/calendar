@@ -9,6 +9,7 @@ class Calendar extends StatelessWidget {
   final List<DateTime>? availableDatesList;
   final List<DateTime>? noAvailableDatesList;
   final CalendarController selectedDateController;
+  final int monthQuantity;
 
   const Calendar({
     Key? key,
@@ -16,6 +17,7 @@ class Calendar extends StatelessWidget {
     this.availableDatesList,
     this.noAvailableDatesList,
     required this.selectedDateController,
+    this.monthQuantity = 6,
   }) : super(key: key);
 
   @override
@@ -31,13 +33,14 @@ class Calendar extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: List.generate(
-                  6,
+                  monthQuantity,
                   (index) => Month(
                     selectedDateController: selectedDateController,
                     isInterval: isInterval,
                     availableDatesList: availableDatesList,
                     noAvailableDatesList: noAvailableDatesList,
-                    date: DateTime.utc(DateTime.now().year, DateTime.now().month + index),
+                    date: DateTime.utc(
+                        DateTime.now().year, DateTime.now().month + index),
                   ),
                 ),
               ),
