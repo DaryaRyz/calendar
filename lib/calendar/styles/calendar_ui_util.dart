@@ -1,7 +1,11 @@
-import 'package:calendar/calendar/styles/calendar_strings.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class CalendarUIUtil{
   static String dateConversion(DateTime date){
-    return '${CalendarStrings.month[date.month - 1]} ${date.year}';
+    initializeDateFormatting('ru');
+    String _date = DateFormat('yMMMM', 'ru').format(date);
+    String result = _date.replaceRange(0, 1, _date[0].toUpperCase());
+    return result.replaceRange(result.length - 3, result.length, '');
   }
 }
