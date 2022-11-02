@@ -66,7 +66,7 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
         borderRadius: IntervalStyleHandler(_dateType).borderRadius,
       ),
       child: TextButton(
-        onPressed: _onTapHandler(),
+        onPressed: _onTapHandler,
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           primary: Colors.black87,
@@ -92,11 +92,9 @@ class _IntervalModeCalendarItemState extends State<IntervalModeCalendarItem> {
   }
 
   _onTapHandler() {
-    _isActualDate
-        ? () {
-            _intervalSelectionSaveHandler(widget.date);
-          }
-        : null;
+    if (_isActualDate) {
+      _intervalSelectionSaveHandler(widget.date);
+    }
   }
 
   void _intervalSelectionSaveHandler(DateTime value) {

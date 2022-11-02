@@ -67,7 +67,7 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         ),
       ),
       child: TextButton(
-        onPressed: _onTapHandler(),
+        onPressed: _onTapHandler,
         style: TextButton.styleFrom(
           padding: EdgeInsets.zero,
           primary: Colors.black87,
@@ -105,14 +105,12 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
   }
 
   _onTapHandler() {
-    _isActualDate && _dateType == SingleDateType.availableDate
-        ? () {
-            setState(() {
-              widget.selectedDateController.setSingleDate(widget.date);
-              _dateType = SingleDateType.selectedDate;
-            });
-          }
-        : null;
+    if (_isActualDate && _dateType == SingleDateType.availableDate){
+      setState(() {
+        widget.selectedDateController.setSingleDate(widget.date);
+        _dateType = SingleDateType.selectedDate;
+      });
+    }
   }
 
   Color _borderColorHandler() {
