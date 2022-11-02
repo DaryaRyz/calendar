@@ -7,15 +7,20 @@ class WeekDays extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   List<String> _date = dateTimeSymbolMap()['ru'].STANDALONESHORTWEEKDAYS;
-   //TODO: поменять местами дни недели
+   List<String> date = dateTimeSymbolMap()['ru'].STANDALONESHORTWEEKDAYS;
+   List<String> weekDays = [];
+   for(int i = 1; i < date.length; i++){
+     weekDays.add(date[i]);
+   }
+   weekDays.add(date[0]);
+
     return Container(
       color: CalendarColors.white,
       child: Row(
         children: List.generate(
-          _date.length,
+          weekDays.length,
           (index) => _WeekDay(
-            name: _date[index],
+            name: weekDays[index],
           ),
         ),
       ),
