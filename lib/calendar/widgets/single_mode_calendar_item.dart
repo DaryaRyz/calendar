@@ -115,9 +115,11 @@ class _SingleModeCalendarItemState extends State<SingleModeCalendarItem> {
         : null;
   }
 
-  _borderColorHandler() {
-    _dateNow.day == widget.date.day && _dateNow.month == widget.date.month
-        ? CalendarColors.black500
-        : Colors.transparent;
+  Color _borderColorHandler() {
+    if (_dateNow.day == widget.date.day &&
+        _dateNow.month == widget.date.month) {
+      return CalendarColors.black500;
+    }
+    return Colors.transparent;
   }
 }
