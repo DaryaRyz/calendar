@@ -1,7 +1,8 @@
 import 'package:calendar/calendar/calendar_controller.dart';
-import 'package:calendar/calendar/styles/calendar_colors.dart';
-import 'package:calendar/calendar/styles/calendar_ui_util.dart';
+import 'package:calendar/calendar/utils/calendar_colors.dart';
+import 'package:calendar/calendar/utils/calendar_ui_util.dart';
 import 'package:calendar/calendar/widgets/interval_mode_calendar_item.dart';
+import 'package:calendar/calendar/widgets/interval_wrapper.dart';
 import 'package:calendar/calendar/widgets/single_mode_calendar_item.dart';
 import 'package:flutter/material.dart';
 
@@ -88,9 +89,9 @@ class _MonthDaysState extends State<_MonthDays> {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 1.3125,
-        crossAxisSpacing: 8,
+        crossAxisSpacing: widget.isInterval ? 0 : 8,
         mainAxisSpacing: 8,
         crossAxisCount: 7,
       ),
@@ -103,9 +104,16 @@ class _MonthDaysState extends State<_MonthDays> {
           _day++;
           if (_day <= _monthDays) {
             if (widget.isInterval) {
-              return IntervalModeCalendarItem(
+              return IntervalWrapper(
                 date: DateTime(widget.date.year, widget.date.month, _day),
+                index: index,
+                startWeekDay: _startWeekDay,
+                monthDays: _monthDays,
                 selectedDateController: widget.selectedDateController,
+                child: IntervalModeCalendarItem(
+                  date: DateTime(widget.date.year, widget.date.month, _day),
+                  selectedDateController: widget.selectedDateController,
+                ),
               );
             } else {
               return SingleModeCalendarItem(

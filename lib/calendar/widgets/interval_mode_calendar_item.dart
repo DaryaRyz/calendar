@@ -1,6 +1,6 @@
 import 'package:calendar/calendar/calendar_controller.dart';
 import 'package:calendar/calendar/calendar_date_types.dart';
-import 'package:calendar/calendar/styles/calendar_colors.dart';
+import 'package:calendar/calendar/utils/calendar_colors.dart';
 import 'package:flutter/material.dart';
 
 class IntervalModeCalendarItem extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:calendar/calendar/styles/calendar_colors.dart';
+import 'package:calendar/calendar/utils/calendar_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 

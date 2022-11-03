@@ -1,5 +1,5 @@
 import 'package:calendar/calendar/calendar_controller.dart';
-import 'package:calendar/calendar/styles/calendar_colors.dart';
+import 'package:calendar/calendar/utils/calendar_colors.dart';
 import 'package:calendar/calendar/widgets/month.dart';
 import 'package:calendar/calendar/widgets/week_days.dart';
 import 'package:flutter/material.dart';

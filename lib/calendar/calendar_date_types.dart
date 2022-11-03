@@ -1,4 +1,4 @@
-import 'package:calendar/calendar/styles/calendar_colors.dart';
+import 'package:calendar/calendar/utils/calendar_colors.dart';
 import 'package:flutter/material.dart';
 
 enum SingleDateType {
@@ -12,12 +12,23 @@ enum IntervalDateType {
   selectedDate,
   intervalDate,
   defaultDate,
+  intervalMonDate,
+  intervalSunDate,
+}
+
+enum IntervalWrapperType{
+  left,
+  right,
+  full,
+  none,
 }
 
 extension IntervalStyleHandler on IntervalDateType {
   Color? get color => {
         IntervalDateType.selectedDate: CalendarColors.black500,
         IntervalDateType.intervalDate: CalendarColors.black150,
+        IntervalDateType.intervalSunDate: CalendarColors.black150,
+        IntervalDateType.intervalMonDate: CalendarColors.black150,
         IntervalDateType.defaultDate: Colors.transparent,
       }[this];
 
@@ -82,4 +93,20 @@ extension SingleStyleHandler on SingleDateType {
           fontWeight: FontWeight.w600,
         ),
       }[this];
+}
+
+extension IntervalWrapperStyleHandler on IntervalWrapperType {
+  EdgeInsetsGeometry? get margin => {
+   IntervalWrapperType.left: const EdgeInsets.only(top: 3, bottom: 3, left: 10),
+   IntervalWrapperType.right: const EdgeInsets.only(top: 3, bottom: 3, right: 10),
+   IntervalWrapperType.full: const EdgeInsets.symmetric(vertical: 3),
+   IntervalWrapperType.none: null,
+  }[this];
+
+  Color? get color => {
+    IntervalWrapperType.left: CalendarColors.black150,
+    IntervalWrapperType.right: CalendarColors.black150,
+    IntervalWrapperType.full: CalendarColors.black150,
+    IntervalWrapperType.none: Colors.transparent,
+  }[this];
 }
