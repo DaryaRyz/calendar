@@ -72,7 +72,6 @@ class _MonthDays extends StatefulWidget {
 }
 
 class _MonthDaysState extends State<_MonthDays> {
-  bool _stopPainting = false;
   int _day = 0;
   late int _monthDays;
   late int _startWeekDay;
@@ -97,10 +96,7 @@ class _MonthDaysState extends State<_MonthDays> {
       ),
       itemCount: _monthDays >= 30 && _startWeekDay >= 5 ? 42 : 35,
       itemBuilder: (context, index) {
-        if (_startWeekDay == index) {
-          _stopPainting = true;
-        }
-        if (_stopPainting) {
+        if (_startWeekDay <= index) {
           _day++;
           if (_day <= _monthDays) {
             if (widget.isInterval) {
